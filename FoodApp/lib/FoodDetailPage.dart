@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:url_launcher/url_launcher.dart';
 
 class FoodDetailPage extends StatelessWidget {
   final String foodId;
@@ -9,8 +10,8 @@ class FoodDetailPage extends StatelessWidget {
   const FoodDetailPage({required this.foodId});
 
   Future<Map<String, dynamic>> fetchFoodById() async {
-    final response = await http.get(Uri.parse(
-        'http://www.themealdb.com/api/json/v1/1/lookup.php?i=$foodId'));
+    final response = await http.get(
+        Uri.parse('http://www.themealdb.com/api/json/v1/1/lookup.php?i=$foodId'));
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
@@ -37,66 +38,97 @@ class FoodDetailPage extends StatelessWidget {
           } else {
             final food = snapshot.data as Map<String, dynamic>;
 
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Image.network(food['strMealThumb']),
-                SizedBox(height: 16),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Text(
-                    food['strMeal'],
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            return SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Image.network(
+                    food['strMealThumb'],
+                    width: double.infinity,
+                    fit: BoxFit.cover,
                   ),
-                ),
-                SizedBox(height: 14),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Text(
-                    'Category',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  SizedBox(height: 16),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Text(
+                      food['strMeal'],
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
                   ),
-                ),
-                SizedBox(height: 10),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Text(
-                    food['strCategory'],
-                    style: TextStyle(fontSize: 15),
+                  SizedBox(height: 14),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Text(
+                      'Category',
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
                   ),
-                ),
-                SizedBox(height: 14),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Text(
-                    'Food Area',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  SizedBox(height: 10),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Text(
+                      food['strCategory'],
+                      style: TextStyle(fontSize: 15),
+                    ),
                   ),
-                ),
-                SizedBox(height: 10),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Text(
-                    food['strArea'],
-                    style: TextStyle(fontSize: 15),
+                  SizedBox(height: 14),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Text(
+                      'Food Area',
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
                   ),
-                ),
-                SizedBox(height: 14),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Text(
-                    'Instructions',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  SizedBox(height: 10),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Text(
+                      food['strArea'],
+                      style: TextStyle(fontSize: 15),
+                    ),
                   ),
-                ),
-                SizedBox(height: 8),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Text(
-                    food['strInstructions'],
+                  SizedBox(height: 14),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Text(
+                      'Instructions',
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
                   ),
-                ),
-              ],
+                  SizedBox(height: 8),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Text(
+                      food['strInstructions'],
+                    ),
+                  ),
+                  SizedBox(height: 14),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Text(
+                      'YouTube Link',
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: InkWell(
+                      child: Text(
+                        food['strYoutube'],
+                        style: TextStyle(fontSize: 15, color: Colors.blue),
+                      ),
+                      onTap: () async {
+                        final Uri url = Uri.parse(food['strYoutube']);
+                        if (!await launchUrl(url)) {
+                          throw Exception('Could not launch');
+                        }
+                      }
+                    ),
+                  ),
+                  SizedBox(height: 16),
+                ],
+              ),
             );
           }
         },

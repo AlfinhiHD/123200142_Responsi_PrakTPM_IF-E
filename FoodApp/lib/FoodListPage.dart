@@ -6,9 +6,9 @@ import 'package:http/http.dart' as http;
 
 
 class FoodListPage extends StatefulWidget {
-  final String categoryId;
+  final String category;
 
-  const FoodListPage({required this.categoryId});
+  const FoodListPage({required this.category});
 
   @override
   _FoodListPageState createState() => _FoodListPageState();
@@ -25,7 +25,7 @@ class _FoodListPageState extends State<FoodListPage> {
 
   Future<void> fetchFoodsByCategory() async {
     final response = await http.get(Uri.parse(
-        'http://www.themealdb.com/api/json/v1/1/filter.php?c=${widget.categoryId}'));
+        'http://www.themealdb.com/api/json/v1/1/filter.php?c=${widget.category}'));
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);

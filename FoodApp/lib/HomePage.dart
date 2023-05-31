@@ -51,7 +51,7 @@ class _HomePageState extends State<HomePage> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => FoodListPage(
-                    categoryId: categories[index]['strCategory'],
+                    category: categories[index]['strCategory'],
                   ),
                 ),
               );
